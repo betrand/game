@@ -98,6 +98,91 @@ public class Board implements Serializable {
                 && (cell2.getMark().equals(cell3.getMark())));
     }
 
+    public boolean nearRowWin(Cell cell1, Cell cell2) {
+        return ((cell1.getId() + 1 == cell2.getId())
+                && (cell2.getId() - cell1.getId() == 1));
+    }
+
+    public Cell nearRowWinCell(Cell cell1, Cell cell2) {
+        if ((cell1.getId() - 1) >= 0 && notCol(cell1, 0)) {
+            if (notMarked(cell1.getId() - 1)) {
+                return getCell(cell1.getId() - 1);
+            }
+        } else {
+
+            if (notMarked(cell1.getId() + 3)) {
+                return getCell(cell1.getId() + 3);
+            }
+            if (notMarked(cell1.getId() - 3)) {
+                return getCell(cell1.getId() - 3);
+            }
+        }
+
+        if (notCol(cell2, 2)) {
+            if (notMarked(cell2.getId() + 1)) {
+                return getCell(cell2.getId() + 1);
+            }
+        } else {
+            if (notMarked(cell2.getId() + 3)) {
+                return getCell(cell2.getId() + 3);
+            }
+            if (notMarked(cell2.getId() - 3)) {
+                return getCell(cell2.getId() - 3);
+            }
+        }
+        return null;
+    }
+
+    public boolean nearColWin(Cell cell1, Cell cell2) {
+        return ((cell1.getId() + 3 == cell2.getId())
+                && (cell2.getId() - cell1.getId() == 3));
+    }
+
+    public Cell nearColWinCell(Cell cell1, Cell cell2) {
+        if ((cell1.getId() - 3) >= 0) {
+            if (notMarked(cell1.getId() - 3)) {
+                return getCell(cell1.getId() - 3);
+            }
+        }
+        if (notMarked(cell2.getId() + 3)) {
+            return getCell(cell2.getId() + 3);
+        }
+        return null;
+    }
+
+    public boolean nearDiagonalWin(Cell cell1, Cell cell2) {
+        return ((cell1.getId() + 4 == cell2.getId())
+                && (cell2.getId() - cell1.getId() == 4));
+    }
+
+    public Cell nearDiagonalWinCell(Cell cell1, Cell cell2) {
+        if ((cell1.getId() - 4) >= 0) {
+            if (notMarked(cell1.getId() - 4)) {
+                return getCell(cell1.getId() - 4);
+            }
+        }
+        if (notMarked(cell2.getId() + 4)) {
+            return getCell(cell2.getId() + 4);
+        }
+        return null;
+    }
+
+    public Cell prepareToWin(Cell cell) {
+        if ("01".contains(String.valueOf(cell.getCol()))) {
+            if (notMarked(cell.getId() + 1)) {
+                return getCell(cell.getId() + 1);
+            }
+        } else {
+            if ("2".contains(String.valueOf(cell.getCol()))) {
+                if (notMarked(cell.getId() - 1)) {
+                    return getCell(cell.getId() - 1);
+                }
+            }
+        }
+
+        return null;
+    }
+
     public boolean rowMarksAreEqual() {
         for (int i = 0; i < rows; i++) {
             if (marksAreEqual(board[i][0], board[i][1], board[i][2]) == true) {
@@ -130,7 +215,7 @@ public class Board implements Serializable {
     }
 
     public boolean notMarked(Cell cell) {
-        return cell.getMark() == null;
+        return cell != null && cell.getMark() == null;
     }
 
     public boolean notMarked(int id) {
@@ -217,6 +302,10 @@ public class Board implements Serializable {
 
     public int getNoOfCells() {
         return rows * cols;
+    }
+
+    private boolean notCol(Cell cell1, int col) {
+        return cell1.getCol() != col;
     }
 
 }
